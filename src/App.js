@@ -14,21 +14,8 @@ function App() {
 
     // обработчки события выбора сдвига
     const handleChooseShift = (event) => {
-        setSelectedShift( event.target.value); // назначение сдвига
+        setSelectedShift(event.target.value); // назначение сдвига
     }
-
-    const [hoveredPixel, setHoveredPixel] = useState({ x: 0, y: 0 });
-
-    // function handleMouseMoveContainer(event) {
-    //     const imageContainer = document.getElementById('imageContainer'); // ID элемента изображения
-    //     const rect = imageContainer.getBoundingClientRect();
-    //
-    //     const x = Math.floor(Math.max(event.clientX - rect.left, 0));
-    //     const y = Math.floor(Math.max(event.clientY - rect.top, 0));
-    //
-    //     setHoveredPixel({ x, y });
-    // }
-
 
     return (
         <div>
@@ -40,36 +27,23 @@ function App() {
                 <form id="shiftForm" onChange={handleChooseShift} className="input-radio__form">
                     <span>Сдвигать коды на: </span>
                     <div className="input-radio__item">
-                        <input type="radio" id="shiftZero" name="shift" value="0"/>
+                        <input type="radio" id="shiftZero" name="shift" value="0" />
                         <label htmlFor="shiftZero">0</label>
                     </div>
 
                     <div className="input-radio__item">
-                        <input type="radio" id="shiftOne" name="shift" value="1" />
+                        <input type="radio" id="shiftOne" name="shift" value="1"/>
                         <label htmlFor="shiftZero">1</label>
                     </div>
 
                     <div className="input-radio__item">
-                        <input type="radio" id="shiftTwo" name="shift" value="2" />
+                        <input type="radio" id="shiftTwo" name="shift" value="2"/>
                         <label htmlFor="shiftZero">2</label>
                     </div>
-
                 </form>
-
             </div>
 
-
-            {/*<div onMouseMove={handleMouseMoveContainer}>*/}
-                {/*<div className="pictureContainer" id="imageContainer">*/}
-                    <Canvas  file={currentFile} shift={selectedShift}/>
-                {/*</div>*/}
-            {/*</div>*/}
-
-
-
-            {/*<p>*/}
-            {/*    Координаты пикселя при наведении (container): ({hoveredPixel.x}, {hoveredPixel.y})*/}
-            {/*</p>*/}
+            <Canvas file={currentFile} shift={selectedShift}/>
 
 
         </div>

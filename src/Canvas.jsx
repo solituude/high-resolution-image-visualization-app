@@ -1,10 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef, createRef} from 'react';
 import './App.css'
 import {getConvertedBrightnessArray, getInitialBrightnessArray} from "./functions/functionaityCore";
+import {paste} from "@testing-library/user-event/dist/paste";
 
 const Canvas = ({file, shift}) => {
     const [image, setImage] = useState(null); // Создаем состояние для хранения изображения
     const [brightnessMatrix, setBrightnessMatrix] = useState([]);
+
+    const [imageSize, setImageSize] = useState({height: 0, width: 0});
 
 
     // Функция для создания изображения из матрицы яркости
@@ -21,6 +24,7 @@ const Canvas = ({file, shift}) => {
                 const imageHeight = convertedColor.length;
                 const imageWidth = convertedColor[0].length;
 
+                setImageSize({height: imageHeight, width: imageWidth});
 
                 const canvas = document.createElement('canvas');
                 canvas.width = imageWidth;
@@ -62,7 +66,6 @@ const Canvas = ({file, shift}) => {
 
     const [hoveredPixelCoordinatesPicture, setHoveredPixelCoordinatesPicture] = useState({x: 0, y: 0});
     const [hoveredPixelCoordinatesContainer, setHoveredPixelCoordinatesContainer] = useState({x: 0, y: 0});
-
     const [hoveredPixelBrightness, setHoveredPixelBrightness] = useState(0);
 
     const setCoordinatesPicture = (x, y) => {
@@ -101,27 +104,48 @@ const Canvas = ({file, shift}) => {
 
 
     return (
-            <div className="content">
-                <div className="coordinates__container">
-                    <p>Координаты курсора</p>
-                    <table>
-                        <tbody>
-                        <tr><td>X:</td><td className={"coordinates__item"}>{hoveredPixelCoordinatesPicture.x}</td></tr>
-                        <tr><td>Y(ЗК):</td><td className={"coordinates__item"}>{hoveredPixelCoordinatesPicture.y}</td></tr>
-                        <tr><td>Y(матрица):</td> <td className={"coordinates__item"}>{hoveredPixelCoordinatesContainer.y}</td></tr>
-                        <tr><td>Яркость:</td><td className={"coordinates__item"}>{hoveredPixelBrightness}</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                {
-                    image &&
-                    <div onMouseMove={handleMouseMoveContainer} className="pictureContainer">
-                        <div id="pictureContainer" onMouseMove={handleMouseMovePicture} className="pic">
-                            <img id="image" src={image.src} alt="Generated Image"/>
-                        </div>
-                    </div>
-                }
+        <div className="content">
+            <div className="coordinates__container">
+                <p>Координаты курсора</p>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>X:</td>
+                        <td className={"coordinates__item"}>{hoveredPixelCoordinatesPicture.x}</td>
+                    </tr>
+                    <tr>
+                        <td>Y(ЗК):</td>
+                        <td className={"coordinates__item"}>{hoveredPixelCoordinatesPicture.y}</td>
+                    </tr>
+                    <tr>
+                        <td>Y(матрица):</td>
+                        <td className={"coordinates__item"}>{hoveredPixelCoordinatesContainer.y}</td>
+                    </tr>
+                    <tr>
+                        <td>Яркость:</td>
+                        <td className={"coordinates__item"}>{hoveredPixelBrightness}</td>
+                    </tr>
+                    <tr>
+                        <td>Ширина изображения:</td>
+                        <td className={"coordinates__item"}>{imageSize.width}</td>
+                    </tr>
+                    <tr>
+                        <td>Высота изображения:</td>
+                        <td className={"coordinates__item"}>{imageSize.height}</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
+
+            {
+                image &&
+                <div onMouseMove={handleMouseMoveContainer} className="pictureContainer">
+                    <div id="pictureContainer" onMouseMove={handleMouseMovePicture} className="pic">
+                        <img id="image" src={image.src} alt="Generated Image"/>
+                    </div>
+                </div>
+            }
+        </div>
 
     );
 }
