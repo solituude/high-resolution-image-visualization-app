@@ -38,7 +38,6 @@ export const getInitialBrightnessArray = (event) => {
     return initialBrightnessArray;
 }
 
-
 // получение матрицы яркости пикселей изображения для дальнейшего построения изображения в RGB, используя технлологию TrueColor
 // аргументы функции: массив яркости пикселей (в представлении 10 бит) и сдвиг
 export const getConvertedBrightnessArray = (initialBrightnessArray, shift) => {

@@ -1,7 +1,7 @@
-import './App.css';
+import './App.css'; //импорт стилей для компонентов
 
 import React, {useState} from "react";
-import Canvas from "./Canvas";
+import Canvas from "./Canvas"; // импорт пользовательского компонента
 
 function App() {
     const [currentFile, setCurrentFile] = useState(null); // файл, загруженный в систему и функция назначения файла
@@ -27,24 +27,23 @@ function App() {
                 <form id="shiftForm" onChange={handleChooseShift} className="input-radio__form">
                     <span>Сдвигать коды на: </span>
                     <div className="input-radio__item">
-                        <input type="radio" id="shiftZero" name="shift" value="0" />
+                        <input type="radio" id="shiftZero" name="shift" value="0" checked={selectedShift === "0"}/>
                         <label htmlFor="shiftZero">0</label>
                     </div>
 
                     <div className="input-radio__item">
-                        <input type="radio" id="shiftOne" name="shift" value="1"/>
+                        <input type="radio" id="shiftOne" name="shift" value="1" checked={selectedShift === "1"}/>
                         <label htmlFor="shiftZero">1</label>
                     </div>
 
                     <div className="input-radio__item">
-                        <input type="radio" id="shiftTwo" name="shift" value="2"/>
+                        <input type="radio" id="shiftTwo" name="shift" value="2" checked={selectedShift === "2"}/>
                         <label htmlFor="shiftZero">2</label>
                     </div>
                 </form>
             </div>
 
             <Canvas file={currentFile} shift={selectedShift}/>
-
 
         </div>
     );
