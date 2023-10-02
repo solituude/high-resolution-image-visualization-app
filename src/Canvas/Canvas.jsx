@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import './App.css';
-import {getConvertedBrightnessArray, getInitialBrightnessArray} from "./functions/functionaityCore";
-import {ca} from "wait-on/exampleConfig";
+import '../App.css';
+import {getConvertedBrightnessArray, getInitialBrightnessArray} from "../functions/functionaityCore";
+
 
 const Canvas = ({file, shift}) => {
     const [image, setImage] = useState(null); // Создаем состояние для хранения изображения
@@ -11,42 +11,42 @@ const Canvas = ({file, shift}) => {
 
     // Функция для создания изображения из матрицы яркости
     const createImageFromMatrix = () => {
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                let initialColor = getInitialBrightnessArray(e);
-                setBrightnessMatrix(initialColor);
+        if (file) { // проверка на загрузку файла
+            const reader = new FileReader(); // объект, обладающий возможностями взаимодейтвия с файлами
+            reader.onload = function (e) { // обработчик события чтения файла
+                let initialColor = getInitialBrightnessArray(e); // создание массива яркости (каждая яркость от 0 до 1023)
+                setBrightnessMatrix(initialColor); // назначение матрицы яркости массива созданной выше, для удобвства в дальнейшем использовании
 
-                const selectedOption = parseInt(shift);
-                let convertedColor = getConvertedBrightnessArray(initialColor, selectedOption);
+                const selectedOption = parseInt(shift); // выбранный сдвиг
+                let convertedColor = getConvertedBrightnessArray(initialColor, selectedOption); // получение матрицы яркости пикселей изображения для дальнейшего построения изображения в RGB
 
-                const imageHeight = convertedColor.length;
-                const imageWidth = convertedColor[0].length;
+                const imageHeight = convertedColor.length; // высота изображения
+                const imageWidth = convertedColor[0].length; // ширина изображения
 
-                setImageSize({height: imageHeight, width: imageWidth});
+                setImageSize({height: imageHeight, width: imageWidth}); // назначение размеров изображения в состояние, для отображения в инетрфейсе
 
-                const canvas = document.createElement('canvas');
-                canvas.width = imageWidth;
-                canvas.height = imageHeight;
+                const canvas = document.createElement('canvas'); // создание элемента холста в приложении
+                canvas.width = imageWidth; // назначение ширины изображения
+                canvas.height = imageHeight; // назначение высоты изображения
 
-                const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext('2d'); // контекст созданного холста для дальнейшего взаимодествия с ним
 
-                const imageData = ctx.createImageData(imageWidth, imageHeight);
+                const imageData = ctx.createImageData(imageWidth, imageHeight); // создание объекта ImageData с указанымми размерами (все пиксели черные прозрачные при инициализации)
 
-                for (let y = 0; y < imageHeight; y++) {
-                    for (let x = 0; x < imageWidth; x++) {
-                        const brightness = convertedColor[y][x];
-                        const index = (y * imageWidth + x) * 4;
+                for (let y = 0; y < imageHeight; y++) { // цикл по высоте изображения
+                    for (let x = 0; x < imageWidth; x++) { // уикл по ширине изображения
+                        const brightness = convertedColor[y][x]; // яркость пикселя
+                        const index = (y * imageWidth + x) * 4; // вычисление индекса для заполнения объекта ImageData
 
-                        imageData.data[index] = brightness.Red;
-                        imageData.data[index + 1] = brightness.Green;
-                        imageData.data[index + 2] = brightness.Blue;
-                        imageData.data[index + 3] = 255;
+                        imageData.data[index] = brightness.Red; // присваивание красного спектра
+                        imageData.data[index + 1] = brightness.Green; // присваивание зеленого спектра
+                        imageData.data[index + 2] = brightness.Blue; // присваивание синего спектра
+                        imageData.data[index + 3] = 255; // присваивание прозрачности пикселя
                     }
                 }
-                ctx.putImageData(imageData, 0, 0);
+                ctx.putImageData(imageData, 0, 0); // отрисовка данных на холсте начиная с координат (0,0)
                 const dataURL = canvas.toDataURL();
-                const img = new Image();
+                const img = new Image(); // создание элемента изображения
                 img.src = dataURL;
 
                 setImage(img);
@@ -114,6 +114,7 @@ const Canvas = ({file, shift}) => {
     }, [file, shift]);
 
 
+    // создание интерфейса
     return (
         <div className="content">
             <div className="coordinates__container">
@@ -125,11 +126,11 @@ const Canvas = ({file, shift}) => {
                         <td className={"coordinates__item"}>{hoveredPixelCoordinatesPicture.x}</td>
                     </tr>
                     <tr>
-                        <td>Y(ЗК):</td>
+                        <td>Y(относительно всего изображения):</td>
                         <td className={"coordinates__item"}>{hoveredPixelCoordinatesPicture.y}</td>
                     </tr>
                     <tr>
-                        <td>Y(матрица):</td>
+                        <td>Y(относительно визуализированного объекта):</td>
                         <td className={"coordinates__item"}>{hoveredPixelCoordinatesContainer.y}</td>
                     </tr>
                     <tr>

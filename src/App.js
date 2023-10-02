@@ -1,7 +1,7 @@
 import './App.css'; //импорт стилей для компонентов
 
 import React, {useState} from "react";
-import Canvas from "./Canvas"; // импорт пользовательского компонента
+import Canvas from "./Canvas/Canvas"; // импорт пользовательского компонента
 
 function App() {
     const [currentFile, setCurrentFile] = useState(null); // файл, загруженный в систему и функция назначения файла
@@ -17,6 +17,7 @@ function App() {
         setSelectedShift(event.target.value); // назначение сдвига
     }
 
+    // графический интерфейс приложения
     return (
         <div>
             <div className="settings">

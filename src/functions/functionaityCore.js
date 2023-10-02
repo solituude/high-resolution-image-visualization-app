@@ -28,18 +28,18 @@ export const getInitialBrightnessArray = (event) => {
     let dataIndex = 2; // индекс, с которого будет происходить считывание информации о яркости каждого пикселя из массива бинарных чисел
 
     for (let y = 0; y < imageHeight; y++) { // цикл составляющий массив яркости пикселей
-        let row = [];
+        let row = []; //создание строки масивва яркости пикселя
         for (let x = 0; x < imageWidth; x++) {
-            row.push(convertToTenBit(binaryArray[dataIndex]));  // добавление в массив информативой части яркости пикселя
+            row.push(convertToTenBit(binaryArray[dataIndex]));  // добавление в строку массива информативой части яркости пикселя
             dataIndex++;
         }
-        initialBrightnessArray.push(row);
+        initialBrightnessArray.push(row); // добавление строки в массив яркости
     }
     return initialBrightnessArray;
 }
 
-// получение матрицы яркости пикселей изображения для дальнейшего построения изображения в RGB, используя технлологию TrueColor
-// аргументы функции: массив яркости пикселей (в представлении 10 бит) и сдвиг
+// получение матрицы яркости пикселей изображения для дальнейшего построения изображения в RGB, используя режим TrueColor
+// аргументы функции: массив яркости пикселей (в представлении 10 бит, т.е. от 0 до 1023) и сдвиг
 export const getConvertedBrightnessArray = (initialBrightnessArray, shift) => {
     let pixelBrightnessMatrix = []; // инициализация массива, являющийся результатом работы функции
     for (let i = 0; i < initialBrightnessArray.length; i++) {

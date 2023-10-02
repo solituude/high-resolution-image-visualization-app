@@ -1,3 +1,5 @@
+/* назначение стилей для элементов интерфейса*/
+
 .App {
   text-align: center;
 }
@@ -85,7 +87,7 @@ img {
 }
 
 .input-file__item {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .input-radio__form {
@@ -101,6 +103,7 @@ img {
   padding: 4px;
   box-sizing: border-box;
   margin: 0 8px;
+
 }
 
 .coordinates__container {
@@ -109,6 +112,7 @@ img {
   background: rgba(139, 173, 234, 0.16);
   border-radius: 4px;
   width: 300px;
+  font-size: 16px;
 }
 
 .coordinates__item {
@@ -117,6 +121,7 @@ img {
   border-radius: 4px;
   justify-content: center;
   margin: 4px;
+  font-size: 16px;
 }
 
 ::-webkit-scrollbar-button {
