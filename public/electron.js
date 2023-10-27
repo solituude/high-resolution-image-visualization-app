@@ -6,8 +6,8 @@ const url = require("url");
 // Создание окна браузера
 function createWindow() {
     const mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1200,
+        height: 800,
         // путь к дополнительному сценарию "предварительной загрузки", который можно использовать для
         // обмена данными между node-land и browser-land.
         webPreferences: {
