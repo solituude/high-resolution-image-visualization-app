@@ -12,9 +12,8 @@ const Canvas = ({file, shift}) => {
     const [image, setImage] = useState(null); // Создаем состояние для хранения изображения
     const [overviewImage, setOverviewImage] = useState(null);
 
-    const [zoom, setZoom] = useState(2);
+    const [zoom, setZoom] = useState(4);
     const [brightnessMatrix, setBrightnessMatrix] = useState([]); // матрица яркости для дальнейшнего определения яркости пикселя по координате
-
 
     // const [convertedBrightnessMatrix, setConvertedBrightnessMatrix] = useState([]);
     const [imageSize, setImageSize] = useState({height: 0, width: 0}); // размер изображения
@@ -111,7 +110,7 @@ const Canvas = ({file, shift}) => {
                 const selectedOption = parseInt(shift); // выбранный сдвиг
 
                 createImage(initialColor, selectedOption)
-                createOverviewImage(initialColor, selectedOption);
+                createOverviewImage(initialColor, 2);
             };
             reader.readAsArrayBuffer(file);
         }

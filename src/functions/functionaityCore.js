@@ -52,6 +52,7 @@ export const getReducedInitBrightness = (initialBrightnessArray) => {
 }
 
 
+// метод получения матрицы увеличенного изображения методом ближайшего соседа
 export const getNearestNeighbor = (convertedColor, zoom, delta) => {
     let zoomArray = [];
     // console.log(delta)
@@ -72,6 +73,7 @@ export const getNearestNeighbor = (convertedColor, zoom, delta) => {
 
 }
 
+// функция получения интерполируемой матрицы
 export const getInterpolateArray  = (zoom, increaseArray) => {
     const interpolateArray = [];
     for (let y = 0; y < increaseArray.length - zoom; y++) {
@@ -104,20 +106,39 @@ export const getInterpolateArray  = (zoom, increaseArray) => {
     for (let y = increaseArray.length - zoom; y < increaseArray.length; y++) {
         const newRow = [];
         for (let x = 0; x < increaseArray[0].length; x++) {
-            const I1 = increaseArray[y][x];
-            const I2 = increaseArray[y][x + zoom];
+            if (x < increaseArray[0].length - zoom) {
+                const I1 = increaseArray[y][x];
+                const I2 = increaseArray[y][x + zoom];
 
-            const Xloc = (x % zoom) / zoom;
+                const Xloc = (x % zoom) / zoom;
 
-            let d = I1;
-            let a = I2 - d;
+                let d = I1;
+                let a = I2 - d;
 
-            let Iloc = a * Xloc + d;
-            newRow.push(Iloc);
+                let Iloc = a * Xloc + d;
+
+                newRow.push(Iloc);
+            } else { // обработка нижнего правого угла при интерполяции
+                newRow.push(increaseArray[y][x]);
+            }
         }
         interpolateArray.push(newRow);
     }
     return interpolateArray;
+}
+
+// нармализация увеличенного куска изображения
+export const getNormalizeColorArray = (initialBrightnessArray, minValue, maxValue) => {
+    const normalizeColorArray = [];
+    for (let y = 0; y < initialBrightnessArray.length; y++) {
+        const rowNormalizeColorArray = [];
+        for (let x = 0; x < initialBrightnessArray[0].length; x++) {
+            const normalizePixel = Math.round((initialBrightnessArray[y][x] - minValue) / maxValue * 255);
+            rowNormalizeColorArray.push(normalizePixel);
+        }
+        normalizeColorArray.push(rowNormalizeColorArray);
+    }
+    return normalizeColorArray;
 }
 
 export const findMinMaxValue = (array) => {
@@ -137,18 +158,6 @@ export const findMinMaxValue = (array) => {
 
 }
 
-export const getNormalizeColorArray = (initialBrightnessArray, minValue, maxValue) => {
-    const normalizeColorArray = [];
-    for (let y = 0; y < initialBrightnessArray.length; y++) {
-        const rowNormalizeColorArray = [];
-        for (let x = 0; x < initialBrightnessArray[0].length; x++) {
-            const normalizePixel = Math.round((initialBrightnessArray[y][x] - minValue) / maxValue * 255);
-            rowNormalizeColorArray.push(normalizePixel);
-        }
-        normalizeColorArray.push(rowNormalizeColorArray);
-    }
-    return normalizeColorArray;
-}
 
 
 
