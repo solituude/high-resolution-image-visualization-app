@@ -136,7 +136,8 @@
   flex-direction: column;
   background: rgba(139, 173, 234, 0.16);
   border-radius: 4px;
-  width: 300px;
+  max-width: 500px;
+  width: fit-content;
   font-size: 16px;
 }
 
@@ -179,4 +180,132 @@
 
 ::-webkit-scrollbar-button:vertical:decrement {
   background-image: url(https://dl.dropboxusercontent.com/u/55165267/icon.png);
+}
+
+.range__container{
+  display: flex;
+  padding-right: 6px;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.range__item {
+  display: flex;
+  flex-direction: row;
+}
+
+$thumb-size: 16px;
+
+@mixin track-styles {
+  appearance: none;
+  background: transparent;
+  border: transparent;
+}
+
+@mixin thumb-styles {
+  appearance: none;
+  pointer-events: all;
+  width: $thumb-size;
+  height: $thumb-size;
+  border-radius: 0;
+  border: 0 none;
+  cursor: grab;
+  background-color: red;
+
+&:active {
+   cursor: grabbing;
+ }
+}
+//
+//#root {
+//  max-width: 500px;
+//  padding: 12px;
+//  margin: auto;
+//}
+
+.wrapper {
+  position: relative;
+  display: flex;
+  width: 80%;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 0 calc(#{$thumb-size} / 2);
+  height: calc(#{$thumb-size} + 1.6rem);
+}
+
+.input-wrapper {
+  width: calc(100% + #{$thumb-size});
+  margin: 0 calc(#{$thumb-size} / -2);
+  position: absolute;
+  height: $thumb-size;
+}
+
+.control-wrapper {
+  width: 100%;
+  position: absolute;
+  height: $thumb-size;
+}
+
+.input {
+  position: absolute;
+  width: 100%;
+  pointer-events: none;
+  appearance: none;
+  height: 100%;
+  opacity: 0;
+  z-index: 3;
+  padding: 0;
+
+&::-ms-track {
+   @include track-styles;
+ }
+
+&::-moz-range-track {
+   @include track-styles;
+ }
+
+&:focus::-webkit-slider-runnable-track {
+   @include track-styles;
+ }
+
+&::-ms-thumb {
+   @include thumb-styles;
+ }
+
+&::-moz-range-thumb {
+   @include thumb-styles;
+ }
+
+&::-webkit-slider-thumb {
+   @include thumb-styles;
+ }
+};
+
+.rail {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 6px;
+  border-radius: 3px;
+  background: lightgrey;
+}
+
+.inner-rail {
+  position: absolute;
+  height: 100%;
+  background: black;
+  opacity: 0.5;
+  z-index: -1;
+}
+
+.control {
+  width: $thumb-size;
+  height: $thumb-size;
+  border-radius: 50%;
+  position: absolute;
+  background: black;
+  top: 50%;
+  margin-left: calc(#{$thumb-size} / -2);
+  transform: translate3d(0, -50%, 0);
+  z-index: 2;
 }

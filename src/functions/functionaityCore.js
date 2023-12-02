@@ -104,13 +104,14 @@ export const getInterpolateArray  = (zoom, increaseArray) => {
     }
     // обработка случая при зуме последних строк изображения
     for (let y = increaseArray.length - zoom; y < increaseArray.length; y++) {
+        const koeff = 1 / zoom;
         const newRow = [];
         for (let x = 0; x < increaseArray[0].length; x++) {
             if (x < increaseArray[0].length - zoom) {
                 const I1 = increaseArray[y][x];
                 const I2 = increaseArray[y][x + zoom];
 
-                const Xloc = (x % zoom) / zoom;
+                const Xloc = (x % zoom) * koeff;
 
                 let d = I1;
                 let a = I2 - d;
@@ -127,18 +128,37 @@ export const getInterpolateArray  = (zoom, increaseArray) => {
     return interpolateArray;
 }
 
-// нармализация увеличенного куска изображения
+// нормализация увеличенного куска изображения
 export const getNormalizeColorArray = (initialBrightnessArray, minValue, maxValue) => {
     const normalizeColorArray = [];
     for (let y = 0; y < initialBrightnessArray.length; y++) {
         const rowNormalizeColorArray = [];
         for (let x = 0; x < initialBrightnessArray[0].length; x++) {
-            const normalizePixel = Math.round((initialBrightnessArray[y][x] - minValue) / maxValue * 255);
+            const normalizePixel = Math.round((initialBrightnessArray[y][x] - minValue) / (maxValue - minValue) * 255);
             rowNormalizeColorArray.push(normalizePixel);
         }
         normalizeColorArray.push(rowNormalizeColorArray);
     }
     return normalizeColorArray;
+}
+
+export const getPartBrightnessArray = (brightnessArray, yMin) => {
+    const partBrightnessArray = [];
+    for (let iter = yMin; iter < yMin + 600; iter++) {
+        partBrightnessArray.push(brightnessArray[iter]);
+    }
+    return partBrightnessArray;
+}
+
+export const getHistogram = (brightnessArray) => {
+    console.log(brightnessArray);
+    let histogramArray = new Array(255).fill(0);
+    for (let i = 0; i < brightnessArray.length; i++){
+        for (let j = 0; j < brightnessArray[0].length; j++) {
+            histogramArray[brightnessArray[i][j]]++;
+        }
+    }
+    return histogramArray;
 }
 
 export const findMinMaxValue = (array) => {
@@ -155,10 +175,15 @@ export const findMinMaxValue = (array) => {
     } catch (e) {
         console.log('error');
     }
-
 }
 
-
+export const getBarLabels = () => {
+    const labels = []
+    for (let i = 0; i < 256; i++) {
+        labels.push(i);
+    }
+    return labels;
+}
 
 
 

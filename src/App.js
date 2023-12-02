@@ -1,7 +1,8 @@
-import './App.css'; //импорт стилей для компонентов
+import './App.scss'; //импорт стилей для компонентов
 
 import React, {useState} from "react";
-import Canvas from "./Canvas/Canvas"; // импорт пользовательского компонента
+import Canvas from "./Canvas/Canvas";
+import {getBarLabels} from "./functions/functionaityCore"; // импорт пользовательского компонента
 
 function App() {
     const [currentFile, setCurrentFile] = useState(null); // файл, загруженный в систему и функция назначения файла
@@ -16,6 +17,7 @@ function App() {
     const handleChooseShift = (event) => {
         setSelectedShift(event.target.value); // назначение сдвига
     }
+    const barLabels = getBarLabels();
 
     // графический интерфейс приложения
     return (
@@ -44,7 +46,7 @@ function App() {
                 </form>
             </div>
 
-            <Canvas file={currentFile} shift={selectedShift}/>
+            <Canvas barLabels={barLabels} file={currentFile} shift={selectedShift}/>
 
         </div>
     );

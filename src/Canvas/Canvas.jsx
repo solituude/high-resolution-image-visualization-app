@@ -1,28 +1,42 @@
-import React, {useState, useEffect} from 'react';
-import '../App.css';
+import React, {useState, useEffect, useRef} from 'react';
+import '../App.scss';
 import {
     findMinMaxValue,
     getConvertedBrightnessArray,
     getInitialBrightnessArray, getInterpolateArray, getNearestNeighbor, getNormalizeColorArray,
     getReducedInitBrightness
 } from "../functions/functionaityCore";
+import BarChart from "../BarChart/BarChart";
 
 
-const Canvas = ({file, shift}) => {
+const Canvas = ({file, shift, barLabels}) => {
+    const containerRef = useRef(); // ссылка на контейнер с изображением
+
     const [image, setImage] = useState(null); // Создаем состояние для хранения изображения
+
+    // обзорное изображение
     const [overviewImage, setOverviewImage] = useState(null);
 
+    // увеличение изображение
     const [zoom, setZoom] = useState(4);
-    const [brightnessMatrix, setBrightnessMatrix] = useState([]); // матрица яркости для дальнейшнего определения яркости пикселя по координате
+
+    // матрица яркости для дальнейшнего определения яркости пикселя по координате
+    const [brightnessMatrix, setBrightnessMatrix] = useState([]);
+
+    //массив яркостей, который отображается в приложении
+    const [convertedBrightness, setConvertedBrightness] = useState([]);
+
+    //минимальное значение по У визуализируемого изображения
+    const [minY, setMinY] = useState(0);
 
     // const [convertedBrightnessMatrix, setConvertedBrightnessMatrix] = useState([]);
     const [imageSize, setImageSize] = useState({height: 0, width: 0}); // размер изображения
     const canvas = document.createElement('canvas'); // создание элемента холста в приложении
     const overviewCanvas = document.createElement('canvas'); // создание холста для обзорного изображения
-    const magnifierCanvas = document.createElement('canvas');
-    magnifierCanvas.height = 300;
-    magnifierCanvas.width = 300;
-    const magnifierContext = magnifierCanvas.getContext('2d');
+    const magnifierCanvas = document.createElement('canvas'); //холст для увеличененного изображения
+    magnifierCanvas.height = 300; // высота увеличенного изображения
+    magnifierCanvas.width = 300; // ширина увеличенного изображения
+    const magnifierContext = magnifierCanvas.getContext('2d'); // контекст холста увеличенного изображения
     let magnifierImageData = magnifierContext.createImageData(magnifierCanvas.width, magnifierCanvas.width);
     const containerMagnifier = document.getElementById('magnifier-container');
 
@@ -33,8 +47,11 @@ const Canvas = ({file, shift}) => {
     // яркость наведенного пикселя
     const [hoveredPixelBrightness, setHoveredPixelBrightness] = useState(0);
 
-    const [isNormalize, setIsNormalize] = useState(false);
-    const [isInterpolate, setIsInterpolate] = useState(false);
+    const [isNormalize, setIsNormalize] = useState(false); // флаг нормализации увеличенного изображения
+    const [isInterpolate, setIsInterpolate] = useState(false); // флаг интерполяции увеличенного изображения
+
+    // значения для слайдера, для назнаечния границы цвета
+    const [value, setValue] = React.useState({ min: 0, max: 255 });
 
     // создание обзорного изображения
     const createOverviewImage = (initialBrightnessArray, shift) => {
@@ -68,6 +85,7 @@ const Canvas = ({file, shift}) => {
     // создание изображения
     const createImage = (initialColor, selectedOption) => {
         let convertedColor = getConvertedBrightnessArray(initialColor, selectedOption); // получение матрицы яркости пикселей изображения для дальнейшего построения изображения в RGB
+        setConvertedBrightness(convertedColor);
         const imageHeight = convertedColor.length; // высота изображения
         const imageWidth = convertedColor[0].length; // ширина изображения
 
@@ -210,12 +228,17 @@ const Canvas = ({file, shift}) => {
     }
 
 
+    // получаю верхнюю границу изображения
+    const handleScroll = () => {
+        setMinY(parseInt(containerRef.current.scrollTop));
+    }
+
+
     useEffect(() => {
         handleUploadFile(); // После получения файла и сдвига или изменения файла/сдвига, создаем изображение
     }, [file, shift]);
 
 
-    // создание интерфейса
     return (
         <div className="content">
             <div className="coordinates__container">
@@ -248,6 +271,12 @@ const Canvas = ({file, shift}) => {
                     </tr>
                     </tbody>
                 </table>
+
+                <BarChart setValue={setValue}
+                          value={value}
+                          barLabels={barLabels}
+                          convertedBrightness={convertedBrightness}
+                          yMin={minY}/>
             </div>
 
             {
@@ -259,7 +288,7 @@ const Canvas = ({file, shift}) => {
             {
                 image ?
                     <div onMouseMove={handleMouseMoveContainer} className="pictureContainer">
-                        <div id="pictureContainer" onMouseMove={handleMouseMovePicture} className="pic">
+                        <div ref={containerRef} onScroll={handleScroll} id="pictureContainer" onMouseMove={handleMouseMovePicture} className="pic">
                             <img id="image" src={image.src} alt="Generated" style={{marginBottom: "-4px"}}/>
                         </div>
                     </div> :
@@ -271,11 +300,13 @@ const Canvas = ({file, shift}) => {
                 <p className="coordinates__item">Инструмент "Лупа"</p>
                 <form className="checkbox__container">
                     <div>
-                        <input id="normalize-brightness" type="checkbox" checked={isNormalize} onChange={() => setIsNormalize(!isNormalize)} />
+                        <input id="normalize-brightness" type="checkbox" checked={isNormalize}
+                               onChange={() => setIsNormalize(!isNormalize)} />
                         <label htmlFor="normalize-brightness">Нормировать яркость</label>
                     </div>
                     <div>
-                        <input id="interpolate" type="checkbox" checked={isInterpolate} onChange={() => setIsInterpolate(!isInterpolate)}/>
+                        <input id="interpolate" type="checkbox" checked={isInterpolate}
+                               onChange={() => setIsInterpolate(!isInterpolate)}/>
                         <label htmlFor="interpolate">Интерполировать</label>
                     </div>
                 </form>
