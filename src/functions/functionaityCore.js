@@ -151,7 +151,6 @@ export const getPartBrightnessArray = (brightnessArray, yMin) => {
 }
 
 export const getHistogram = (brightnessArray) => {
-    console.log(brightnessArray);
     let histogramArray = new Array(255).fill(0);
     for (let i = 0; i < brightnessArray.length; i++){
         for (let j = 0; j < brightnessArray[0].length; j++) {
@@ -159,6 +158,21 @@ export const getHistogram = (brightnessArray) => {
         }
     }
     return histogramArray;
+}
+
+export const getLimitedBrightnessArray = (brightnessArray, minBrightness, maxBrightness) => {
+    let limitedBrightnessArray = brightnessArray;
+    for (let y = 0; y < brightnessArray.length; y++) {
+        for (let x = 0; x < brightnessArray[0].length; x++) {
+            if (limitedBrightnessArray[y][x] < minBrightness) {
+                limitedBrightnessArray[y][x] = 0;
+            }
+            else if(limitedBrightnessArray[y][x] > maxBrightness) {
+                limitedBrightnessArray[y][x] = 255;
+            }
+        }
+    }
+    return limitedBrightnessArray;
 }
 
 export const findMinMaxValue = (array) => {
@@ -185,5 +199,11 @@ export const getBarLabels = () => {
     return labels;
 }
 
+export const getBorderData = (left, right) => {
+    let histogramArray = new Array(255).fill(0);
+    histogramArray[left] = 5000;
+    histogramArray[right] = 5000;
+    return histogramArray;
+}
 
 

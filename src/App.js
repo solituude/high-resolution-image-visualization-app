@@ -2,7 +2,7 @@ import './App.scss'; //импорт стилей для компонентов
 
 import React, {useState} from "react";
 import Canvas from "./Canvas/Canvas";
-import {getBarLabels} from "./functions/functionaityCore"; // импорт пользовательского компонента
+import {getBarLabels} from "./functions/functionaityCore";
 
 function App() {
     const [currentFile, setCurrentFile] = useState(null); // файл, загруженный в систему и функция назначения файла
@@ -45,9 +45,7 @@ function App() {
                     </div>
                 </form>
             </div>
-
             <Canvas barLabels={barLabels} file={currentFile} shift={selectedShift}/>
-
         </div>
     );
 }

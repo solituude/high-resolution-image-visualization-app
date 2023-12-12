@@ -3,7 +3,11 @@ import '../App.scss';
 import {
     findMinMaxValue,
     getConvertedBrightnessArray,
-    getInitialBrightnessArray, getInterpolateArray, getNearestNeighbor, getNormalizeColorArray,
+    getInitialBrightnessArray,
+    getInterpolateArray,
+    getLimitedBrightnessArray,
+    getNearestNeighbor,
+    getNormalizeColorArray,
     getReducedInitBrightness
 } from "../functions/functionaityCore";
 import BarChart from "../BarChart/BarChart";
@@ -39,6 +43,7 @@ const Canvas = ({file, shift, barLabels}) => {
     const magnifierContext = magnifierCanvas.getContext('2d'); // контекст холста увеличенного изображения
     let magnifierImageData = magnifierContext.createImageData(magnifierCanvas.width, magnifierCanvas.width);
     const containerMagnifier = document.getElementById('magnifier-container');
+    const containerImage = document.getElementById('pictureContainer');
 
     // координата наведенного пикселя изображения
     const [hoveredPixelCoordinatesPicture, setHoveredPixelCoordinatesPicture] = useState({x: 0, y: 0});
@@ -51,7 +56,13 @@ const Canvas = ({file, shift, barLabels}) => {
     const [isInterpolate, setIsInterpolate] = useState(false); // флаг интерполяции увеличенного изображения
 
     // значения для слайдера, для назнаечния границы цвета
-    const [value, setValue] = React.useState({ min: 0, max: 255 });
+    const [value, setValue] = useState({min: 0, max: 255});
+
+    // использовать массив ниже для отображения изображения (в качестве начальных настроек минимальное значение
+    // яркости 0, а максимальное 255, а массив выше использовать для построения гистограммы изображения)
+    // также можно использовать не useState а просто переменной присваивать значение функции, которая будет возварщать
+    // массив с ограниченной яркостью
+    // const limitedBrightness = getLimitedBrightnessArray(convertedBrightness, value.min, value.max)
 
     // создание обзорного изображения
     const createOverviewImage = (initialBrightnessArray, shift) => {
@@ -86,6 +97,7 @@ const Canvas = ({file, shift, barLabels}) => {
     const createImage = (initialColor, selectedOption) => {
         let convertedColor = getConvertedBrightnessArray(initialColor, selectedOption); // получение матрицы яркости пикселей изображения для дальнейшего построения изображения в RGB
         setConvertedBrightness(convertedColor);
+        convertedColor = getLimitedBrightnessArray(convertedColor, value.min, value.max)
         const imageHeight = convertedColor.length; // высота изображения
         const imageWidth = convertedColor[0].length; // ширина изображения
 
@@ -106,7 +118,7 @@ const Canvas = ({file, shift, barLabels}) => {
                 imageData.data[index] = brightness; // присваивание красного спектра
                 imageData.data[index + 1] = brightness; // присваивание зеленого спектра
                 imageData.data[index + 2] = brightness; // присваивание синего спектра
-                imageData.data[index + 3] = 255; // присваивание прозрачности пикселя
+                imageData.data[index + 3] = 255; // присваивание непрозрачности пикселя
             }
         }
         ctx.putImageData(imageData, 0, 0); // отрисовка данных на холсте начиная с координат (0,0)
@@ -171,7 +183,7 @@ const Canvas = ({file, shift, barLabels}) => {
         if (isNormalize) {
             convertedReducedArray = getNormalizeColorArray(reducedArray, minMaxBrightness.minValue, minMaxBrightness.maxValue);
             convertedReducedArray = getConvertedBrightnessArray(convertedReducedArray, 0);
-        } else{
+        } else {
             convertedReducedArray = getConvertedBrightnessArray(reducedArray, parseInt(shift));
         }
 
@@ -179,10 +191,8 @@ const Canvas = ({file, shift, barLabels}) => {
             (convertedReducedArray.length * zoom - magnifierCanvas.height) / 2);
 
         if (isInterpolate) {
-            convertedReducedArray = getInterpolateArray(zoom, convertedReducedArray, );
+            convertedReducedArray = getInterpolateArray(zoom, convertedReducedArray,);
         }
-
-
 
         for (let y = 0; y < convertedReducedArray.length; y++) {
             for (let x = 0; x < convertedReducedArray[0].length; x++) {
@@ -190,7 +200,7 @@ const Canvas = ({file, shift, barLabels}) => {
                 const index = (y * convertedReducedArray[0].length + x) * 4; // вычисление индекса для заполнения объекта ImageData
 
                 magnifierImageData.data[index] = brightness; // присваивание красного спектра
-                magnifierImageData.data[index + 1] = brightness; // приcваивание зеленого спектра
+                magnifierImageData.data[index + 1] = brightness; // присваивание зеленого спектра
                 magnifierImageData.data[index + 2] = brightness; // присваивание синего спектра
                 magnifierImageData.data[index + 3] = 255; // присваивание прозрачности пикселя
             }
@@ -236,7 +246,8 @@ const Canvas = ({file, shift, barLabels}) => {
 
     useEffect(() => {
         handleUploadFile(); // После получения файла и сдвига или изменения файла/сдвига, создаем изображение
-    }, [file, shift]);
+        console.log(convertedBrightness);
+    }, [file, shift, value]);
 
 
     return (
@@ -275,7 +286,8 @@ const Canvas = ({file, shift, barLabels}) => {
                 <BarChart setValue={setValue}
                           value={value}
                           barLabels={barLabels}
-                          convertedBrightness={convertedBrightness}
+                          convertedBrightness={brightnessMatrix}
+                          selectedOption={shift}
                           yMin={minY}/>
             </div>
 
@@ -288,7 +300,8 @@ const Canvas = ({file, shift, barLabels}) => {
             {
                 image ?
                     <div onMouseMove={handleMouseMoveContainer} className="pictureContainer">
-                        <div ref={containerRef} onScroll={handleScroll} id="pictureContainer" onMouseMove={handleMouseMovePicture} className="pic">
+                        <div ref={containerRef} onScroll={handleScroll} id="pictureContainer"
+                             onMouseMove={handleMouseMovePicture} className="pic">
                             <img id="image" src={image.src} alt="Generated" style={{marginBottom: "-4px"}}/>
                         </div>
                     </div> :
@@ -301,7 +314,7 @@ const Canvas = ({file, shift, barLabels}) => {
                 <form className="checkbox__container">
                     <div>
                         <input id="normalize-brightness" type="checkbox" checked={isNormalize}
-                               onChange={() => setIsNormalize(!isNormalize)} />
+                               onChange={() => setIsNormalize(!isNormalize)}/>
                         <label htmlFor="normalize-brightness">Нормировать яркость</label>
                     </div>
                     <div>
