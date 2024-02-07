@@ -11,17 +11,16 @@ import {CategoryScale, Chart as ChartJS} from 'chart.js';
 import Chart from 'chart.js/auto';
 
 
-const BarChart = ({barLabels, convertedBrightness, yMin, setValue, value, selectedOption}) => {
+const BarChart = ({barLabels, convertedBrightness, yMin, setValue, selectedOption}) => {
     const [barData, setBarData] = useState([]);
     const [currentValue, setCurrentValue] = useState({min: 0, max: 255});
     const borderData = getBorderData(currentValue.min, currentValue.max);
 
 
     useEffect(() => {
-        // console.log(convertedBrightness);
+
         let currentBrightness = getConvertedBrightnessArray(convertedBrightness, selectedOption);
         currentBrightness = getPartBrightnessArray(currentBrightness, yMin);
-        // console.log(currentBrightness);
         if (convertedBrightness.length !== 0){
             setBarData(getHistogram(currentBrightness));
         }
@@ -33,7 +32,7 @@ const BarChart = ({barLabels, convertedBrightness, yMin, setValue, value, select
             {
                 label: "Количество пикселей",
                 data: barData,
-                backgroundColor: "rgba(139, 173, 234, 1)",
+                backgroundColor: "rgb(57,112,229)",
             },
             {
                 label: "Границы",
@@ -55,7 +54,7 @@ const BarChart = ({barLabels, convertedBrightness, yMin, setValue, value, select
                     display: true,
                     text: "Количество пикселей"
                 },
-                max: 1000,
+                max: 3000,
                 ticks: {
                     stepSize: 100,
                     reverse: true,
@@ -93,12 +92,10 @@ const BarChart = ({barLabels, convertedBrightness, yMin, setValue, value, select
             <div className={"range__container"}>
                 <div className={"gradient"}/>
                 <RangeSlider min={0} max={255} step={1} value={currentValue} onChange={setCurrentValue} />
-
                 <div className="left-right__container">
                     <span>L:<span>{currentValue.min}</span></span>
                     <span>R:<span>{currentValue.max}</span></span>
                 </div>
-
             </div>
             <button onClick={() => setValue(currentValue)} style={{margin: "10px 60px"}}>
                 Применить

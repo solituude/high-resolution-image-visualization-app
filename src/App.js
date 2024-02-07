@@ -1,3 +1,5 @@
+// вот тут изменения в новой ветке
+
 import './App.scss'; //импорт стилей для компонентов
 
 import React, {useState} from "react";

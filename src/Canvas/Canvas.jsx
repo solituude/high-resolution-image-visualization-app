@@ -43,7 +43,7 @@ const Canvas = ({file, shift, barLabels}) => {
     const magnifierContext = magnifierCanvas.getContext('2d'); // контекст холста увеличенного изображения
     let magnifierImageData = magnifierContext.createImageData(magnifierCanvas.width, magnifierCanvas.width);
     const containerMagnifier = document.getElementById('magnifier-container');
-    const containerImage = document.getElementById('pictureContainer');
+
 
     // координата наведенного пикселя изображения
     const [hoveredPixelCoordinatesPicture, setHoveredPixelCoordinatesPicture] = useState({x: 0, y: 0});
@@ -284,7 +284,6 @@ const Canvas = ({file, shift, barLabels}) => {
                 </table>
 
                 <BarChart setValue={setValue}
-                          value={value}
                           barLabels={barLabels}
                           convertedBrightness={brightnessMatrix}
                           selectedOption={shift}
